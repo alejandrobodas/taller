@@ -6,9 +6,10 @@ install:
   - sudo apt-get install libnetcdf-dev libnetcdff-dev
   - cd build
   - make driver
-  - cd ..
+  - cd ../driver/run
 
 script:
-  - cd driver/run
   - ./taller
+  - cd ../data/outputs
+  - nccmp --data --force --quiet --Tolerance=10 taller_out.nc taller_out.kgo.nc
   

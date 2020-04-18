@@ -5,7 +5,7 @@ PROGRAM TALLER
    integer :: ierr,ncid,dimid,varid
    real :: x(7)
    character(len = 80)  :: strerror
-   x = 1.0
+   x = 1.1
    
    ierr = nf90_create(path="../data/outputs/taller_out.nc", cmode=NF90_WRITE, &
             ncid=ncid)

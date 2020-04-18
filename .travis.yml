@@ -1,1 +1,14 @@
+language: python
+python:
+  - "3"
+install:
+  - sudo apt-get install gfortran
+  - echo which python
+  - cd build
+  - make driver
+  - cd ../driver/run
 
+script:
+  - cd ../driver/run
+  - taller
+  

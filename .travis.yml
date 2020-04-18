@@ -6,7 +6,7 @@ install:
   - sudo apt-get install libnetcdf-dev libnetcdff-dev
   - cd build
   - make driver
-  - ls
+  - pwd
 
 script:
   - python --version

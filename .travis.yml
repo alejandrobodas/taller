@@ -8,7 +8,8 @@ install:
   - make driver
   - cd ..
   - cd driver
+  - cd run
 
 script:
-  - python --version
+  - taller
   

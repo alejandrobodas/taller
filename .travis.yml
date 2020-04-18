@@ -7,7 +7,7 @@ install:
   - cd build
   - make driver
   - cd ..
-  - cd build
+  - cd driver
 
 script:
   - python --version

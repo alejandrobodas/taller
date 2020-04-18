@@ -6,9 +6,7 @@ install:
   - sudo apt-get install libnetcdf-dev libnetcdff-dev
   - cd build
   - make driver
-  - cd ..
-  - cd driver
-  - cd run
+  - cd ../driver/run
 
 script:
   - taller

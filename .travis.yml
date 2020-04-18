@@ -6,8 +6,9 @@ install:
   - sudo apt-get install libnetcdf-dev libnetcdff-dev
   - cd build
   - make driver
+  - cd ..
 
 script:
   - cd driver/run
-  - taller
+  - ./taller
   

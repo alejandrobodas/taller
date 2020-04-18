@@ -4,6 +4,9 @@ python:
 install:
   - sudo apt-get install gfortran
   - sudo apt-get install libnetcdf-dev libnetcdff-dev
+  - sudo add-apt-repository ppa:remik-ziemlinski/nccmp
+  - sudo apt-get update
+  - sudo apt-get install nccmp
   - cd build
   - make driver
   - cd ../driver/run

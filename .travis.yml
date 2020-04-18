@@ -4,12 +4,11 @@ python:
 install:
   - sudo apt-get install gfortran
   - sudo apt-get install libnetcdf-dev libnetcdff-dev
-  - echo which python
   - cd build
   - make driver
-  - cd ../driver/run
+  - cd ..
 
 script:
-  - cd ../driver/run
+  - cd driver/run
   - taller
   

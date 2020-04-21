@@ -14,6 +14,7 @@ install:
 
 script:
   - ./taller
+  - cd ..
   - python cosp2_test_01.py data/outputs/taller_out.kgo.nc data/outputs/taller_out.nc
   #- cd ../data/outputs
   #- nccmp --data --force --quiet --statistics --Tolerance=0.001 taller_out.nc taller_out.kgo.nc

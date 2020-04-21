@@ -1,1 +1,4 @@
-netCDF4,argparse,sys,numpy
+netCDF4
+argparse
+sys
+numpy

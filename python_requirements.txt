@@ -1,4 +1,3 @@
 netCDF4
 argparse
-sys
 numpy

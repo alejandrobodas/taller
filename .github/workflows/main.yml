@@ -29,15 +29,17 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r python_requirements.txt
-
-    # Build and run test
-    - name: Build driver and run test
+    - name: Install gfortran and netCDF libraries
       run: |
         sudo apt-get install gfortran
         sudo apt-get install libnetcdf-dev libnetcdff-dev
+    - name: Build driver and run test
+      run: |
         cd build
         make driver
         cd ../driver/run
         ./taller
+    - name: Compare output against KGO
+      run: |
         cd ..
         python cosp2_test_01.py data/outputs/taller_out.kgo.nc data/outputs/taller_out.nc

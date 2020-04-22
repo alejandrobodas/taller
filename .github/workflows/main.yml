@@ -22,8 +22,15 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
-    # Runs a set of commands using the runners shell
-    - name: Run a multi-line script
+    # Build and run test
+    - name: Build driver and run test
       run: |
-        echo Add other actions to build,
-        echo test, and deploy your project.
+        pip install -r python_requirements.txt
+        sudo apt-get install gfortran
+        sudo apt-get install libnetcdf-dev libnetcdff-dev
+        cd build
+        make driver
+        cd ../driver/run
+        ./taller
+        cd ..
+        python cosp2_test_01.py data/outputs/taller_out.kgo.nc data/outputs/taller_out.nc

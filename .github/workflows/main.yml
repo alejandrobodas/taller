@@ -49,4 +49,4 @@ jobs:
       uses: actions/upload-artifact@v1.0.0
       with:
         name: taller_out.nc
-        path: driver/data/outputs
+        path: driver/data/outputs/taller_out.nc

@@ -1,0 +1,17 @@
+name: 'NetCDF output'
+description: 'Upload output file. Required when KGO changed so that KGO can be updated.'
+author: 'alejandrobodas'
+inputs: 
+  name:
+    description: 'Artifact name'
+    required: true
+  path:
+    description: 'Directory containing files to upload'
+    required: true
+runs:
+  plugin: 'publish'
+steps:
+- uses: actions/upload-artifact@v1
+  with:
+    name: taller_out.nc
+    path: driver/data/outputs

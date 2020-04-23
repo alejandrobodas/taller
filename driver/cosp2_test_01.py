@@ -41,7 +41,7 @@ if __name__ == '__main__':
     # Loop over variables
     iv = 0
     for vname in vlst:
-        print(vname)
+        print("Variable: ", vname)
         # Read variable
         kgo = read_var(args.kgo_file, vname) # KGO
         tst = read_var(args.out_file, vname) # test
@@ -51,3 +51,7 @@ if __name__ == '__main__':
         iv+=1
     
     s = fracError.sum()
+    if s > 0:
+        sys.exit(1)
+    else:
+        sys.exit()

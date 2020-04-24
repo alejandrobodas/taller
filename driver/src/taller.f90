@@ -3,9 +3,10 @@ PROGRAM TALLER
    implicit none
    
    integer :: ierr,ncid,dimid,varid
-   real :: x(7)
+   real :: x(7), y(7)
    character(len = 80)  :: strerror
    x = 1.1
+   y = 2.0
    
    ierr = nf90_create(path="../data/outputs/taller_out.nc", cmode=NF90_WRITE, &
             ncid=ncid)
@@ -24,8 +25,10 @@ PROGRAM TALLER
 
    ierr = nf90_def_dim(ncid, 'dx', 7, dimid)
    ierr = nf90_def_var(ncid, 'x', nf90_float, (/dimid/), varid)
+   ierr = nf90_def_var(ncid, 'y', nf90_float, (/dimid/), varid)
    ierr = nf90_enddef(ncid)
    ierr = nf90_put_var(ncid, varid, x,count=(/7/))
+   ierr = nf90_put_var(ncid, varid, y,count=(/7/))
    ierr = nf90_close(ncid) 
 END PROGRAM TALLER
 

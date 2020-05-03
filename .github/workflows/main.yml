@@ -9,11 +9,13 @@ jobs:
     runs-on: ubuntu-18.04
     env:
       F90: gfortran-8
-      NCFF: ${HOME}/netcdff
-      LD_LIBRARY_PATH: ${LD_LIBRARY_PATH}:${NCFF}/lib
 
     # Sequence of tasks that will be executed as part of the job
     steps:
+    - name: Environment variables
+      run: |
+        export NCFF=${HOME}/netcdff
+        export LD_LIBRARY_PATH+=:${NCFF}/lib
     # Checks-out repository under $GITHUB_WORKSPACE
     - uses: actions/checkout@v2
     - name: Set up Python

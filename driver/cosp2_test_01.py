@@ -2,6 +2,9 @@ import netCDF4,argparse,sys
 import numpy as np
 
 def get_var_list(ncfile):
+    """
+    Returns a list with the names of the variables in a NetCDF file.
+    """
     dataset = netCDF4.Dataset(ncfile)
     var_list = dataset.variables.keys()
     dataset.close()
@@ -9,10 +12,30 @@ def get_var_list(ncfile):
     
 
 def read_var(fname, vname):
+    """
+    Returns the variable 'vname' in a NetCDF file.
+    """
     f_id = netCDF4.Dataset(fname,'r')
     return f_id.variables[vname][:]
 
 def calculate_stats(tst, kgo, atol=0.0, rtol=None):
+    """
+    Returns a dictionary with some basic summary statistics of the differences
+    between two numpy arrays. The dictionary contains the following keys:
+        'N': number of differences.
+        'AvgDiff': average difference.
+        'MinDiff': minimum difference.
+        'MaxDiff': maximum difference.
+        'StDev': standard deviation of the differences.
+    
+    Arguments:
+        tst: test variable (numpy array).
+        kgo: reference variable (numpy array).
+    Keyword arguments:
+        atol: absolute tolerance threshold. Smaller differences pass the test.
+        rtol: relative tolerance threshold. Smaller differences pass the test.
+    
+    """
     summary_stats = {'N':0, 'AvgDiff':0.0, 'MinDiff':0.0, 'MaxDiff':0.0, 'StDev':0.0}
     # All differences
     d = tst - kgo
@@ -30,21 +53,24 @@ def calculate_stats(tst, kgo, atol=0.0, rtol=None):
             # be 1 or -1)
             maskedKgo = kgo[maskAllDiff]
             rdiffs = diffs / maskedKgo
-            maks_zeroes = (maskedKgo == 0.0)
-            rdiffs[mask_zeroes] = np.sign(diffs[mask_zeroes])
+            rdiffs[maskedKgo == 0.0] = np.sign(diffs[maskedKgo == 0.0])
             # Keep only those diffs larger than relative tolerance
             diffs = diffs[np.absolute(rdiffs) > rtol]
-            NallDiff = diffs.sum()
+            NallDiff = len(diffs)
         # Calculate summary stats
         summary_stats['N'] = NallDiff
-        summary_stats['AvgDiff'] = diffs.mean()
-        summary_stats['MinDiff'] = diffs.min()
-        summary_stats['MaxDiff'] = diffs.max()
-        summary_stats['StDev'] = diffs.std()
+        if NallDiff > 0:
+            summary_stats['AvgDiff'] = diffs.mean()
+            summary_stats['MinDiff'] = diffs.min()
+            summary_stats['MaxDiff'] = diffs.max()
+            summary_stats['StDev'] = diffs.std()
         
     return summary_stats
 
 def print_stats_table(summary_stats):
+    """
+    Print table of summary statistics.
+    """
     for key, s in summary_stats.items():
         print(key,s)
 
@@ -55,8 +81,12 @@ if __name__ == '__main__':
 
     # Command line arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument("kgo_file")
-    parser.add_argument("tst_file")
+    parser.add_argument("kgo_file", help="File with known good outputs.")
+    parser.add_argument("tst_file", help="Test output file.")
+    parser.add_argument("--atol",type=float,
+                        default=0.0,help="Absolute tolerance.")
+    parser.add_argument("--rtol",type=float,
+                        default=None,help="Relative tolerance.")
     args = parser.parse_args()
 
     # Get list of variables
@@ -77,15 +107,16 @@ if __name__ == '__main__':
     for vname in vlst:
         kgo = read_var(args.kgo_file, vname) # KGO
         tst = read_var(args.tst_file, vname) # test
-        summary_stats[vname] = calculate_stats(tst, kgo)
+        summary_stats[vname] = calculate_stats(tst, kgo, 
+                                               atol=args.atol, rtol=args.rtol)
         if summary_stats[vname]['N'] > 0: errored = True
 
     # Print summary stats
     print_stats_table(summary_stats)
     
     # Error if files have different number variables. If the number 
-    # of variables is the same, but they have different names it will
-    # fail summary_stats.
+    # of variables is the same but they have different names, it will
+    # fail in summary_stats.
     if (nkgo != ntst):
         errored = True
         print("=== Variables in KGO ===")

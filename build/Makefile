@@ -20,6 +20,9 @@ LDFLAGS  += $(NC_LIB) -lnetcdff
 %: %.o
 	$(F90) $(F90FLAGS) -o $@ $^ $(LDFLAGS) $(LIBS)
 
+clean:
+	rm -f *.mod *.o taller
+
 driver:
 	make taller
 	mv taller ../driver/run

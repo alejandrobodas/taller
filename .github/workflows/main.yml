@@ -12,10 +12,6 @@ jobs:
 
     # Sequence of tasks that will be executed as part of the job
     steps:
-    - name: Environment variables
-      run: |
-        export NCFF=${HOME}/netcdff
-        export LD_LIBRARY_PATH+=:${NCFF}/lib
     # Checks-out repository under $GITHUB_WORKSPACE
     - uses: actions/checkout@v2
     - name: Set up Python
@@ -33,6 +29,7 @@ jobs:
         ${F90} --version
     - name: Build and install netCDF Fortran library
       run: |
+        NCFF=${HOME}/netcdff
         git clone https://github.com/Unidata/netcdf-fortran.git --branch v4.4.4
         cd netcdf-fortran
         ./configure --prefix=${NCFF}
@@ -44,6 +41,8 @@ jobs:
         make driver
     - name: Run test
       run: |
+        NCFF=${HOME}/netcdff
+        LD_LIBRARY_PATH+=:${NCFF}/lib
         echo ${LD_LIBRARY_PATH}
         ls ${NCFF}
         cd driver/run

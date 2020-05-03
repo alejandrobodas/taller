@@ -42,6 +42,8 @@ jobs:
         make driver
     - name: Run test
       run: |
+        echo ${LD_LIBRARY_PATH}
+        ls ${NCFF}
         cd driver/run
         ./taller
     - name: Compare output against KGO

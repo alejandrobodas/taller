@@ -24,6 +24,7 @@ jobs:
         pip install -r python_requirements.txt
     - name: Install gfortran and netCDF libraries
       run: |
+        sudo apt-get install gcc-8
         sudo apt-get install gfortran-8
         sudo apt-get install libnetcdf-dev libnetcdff-dev
     - name: Build driver

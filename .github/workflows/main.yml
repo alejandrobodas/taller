@@ -1,7 +1,7 @@
 # This is a basic workflow to help you get started with Actions
 
 name: CI
-on: push pull_request
+on: [push, pull_request]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -27,7 +27,7 @@ jobs:
         sudo apt-get install gfortran-8
         sudo apt-get install libnetcdf-dev libnetcdff-dev
     - name: Build driver
-      env:
+      env: |
         F90=gfortran-8
       run: |
         cd build

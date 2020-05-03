@@ -34,7 +34,7 @@ jobs:
         cd netcdf-fortran
         ./configure
         make
-        make install
+        sudo make install
     - name: Build driver
       run: |
         cd build

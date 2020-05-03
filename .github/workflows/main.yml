@@ -9,6 +9,8 @@ jobs:
     runs-on: ubuntu-18.04
     env:
       F90: gfortran-8
+      NCFF: ${HOME}/netcdff
+      LD_LIBRARY_PATH: ${LD_LIBRARY_PATH}:${NCFF}
 
     # Sequence of tasks that will be executed as part of the job
     steps:
@@ -31,7 +33,7 @@ jobs:
       run: |
         git clone https://github.com/Unidata/netcdf-fortran.git --branch v4.4.4
         cd netcdf-fortran
-        ./configure --prefix=${HOME}/netcdff
+        ./configure --prefix=${NCFF}
         make
         make install
     - name: Build driver

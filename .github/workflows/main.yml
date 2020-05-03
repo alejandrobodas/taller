@@ -28,7 +28,7 @@ jobs:
         sudo apt-get install libnetcdf-dev libnetcdff-dev
     - name: Build driver
       env:
-        - F90=gfortran-8
+      - F90=gfortran-8
       run: |
         cd build
         make driver

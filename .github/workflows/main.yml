@@ -42,9 +42,9 @@ jobs:
     - name: Run test
       run: |
         NCFF=${HOME}/netcdff
-        LD_LIBRARY_PATH+=:${NCFF}/lib
+        LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${NCFF}/lib
         echo ${LD_LIBRARY_PATH}
-        ls ${NCFF}
+        ls ${NCFF}/lib
         cd driver/run
         ./taller
     - name: Compare output against KGO

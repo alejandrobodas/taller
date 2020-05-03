@@ -10,6 +10,8 @@ jobs:
 
     # Sequence of tasks that will be executed as part of the job
     steps:
+    env:
+      F90: gfortran
     # Checks-out repository under $GITHUB_WORKSPACE
     - uses: actions/checkout@v2
     - name: Set up Python
@@ -21,8 +23,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r python_requirements.txt
     - name: Install gfortran and netCDF libraries
-      env:
-        F90: gfortran
       run: |
         sudo apt-get install ${F90}
         sudo apt-get install libnetcdf-dev libnetcdff-dev

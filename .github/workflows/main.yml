@@ -1,9 +1,7 @@
-# This is a basic workflow to help you get started with Actions
-
+# Workflow for continuous integration tests
 name: CI
 on: [push, pull_request]
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
   build:
@@ -12,7 +10,7 @@ jobs:
 
     # Sequence of tasks that will be executed as part of the job
     steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    # Checks-out repository under $GITHUB_WORKSPACE
     - uses: actions/checkout@v2
     - name: Set up Python
       uses: actions/setup-python@v1
@@ -40,7 +38,7 @@ jobs:
     - name: Compare output against KGO
       run: |
         cd driver
-        python cosp2_test_01.py data/outputs/taller_out.kgo.nc data/outputs/taller_out.nc
+        python cosp2_test_01.py data/outputs/taller_out.kgo.nc data/outputs/taller_out.nc --atol=0.0 --rtol=0.0
     - name: Upload output file if test fails
       if: failure()
       uses: actions/upload-artifact@v1.0.0

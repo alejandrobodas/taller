@@ -32,7 +32,7 @@ jobs:
         NCFF=${HOME}/netcdff
         git clone https://github.com/Unidata/netcdf-fortran.git --branch v4.4.4
         cd netcdf-fortran
-        ./configure --prefix=${NCFF}
+        ./configure
         make
         make install
     - name: Build driver

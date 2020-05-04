@@ -3,13 +3,15 @@ name: CI
 on: [push, pull_request]
 
 jobs:
-  # This workflow contains a single job called "build"
-  build:
+  # This workflow contains a single job called "test"
+  test:
     # The type of runner that the job will run on
     runs-on: ubuntu-18.04
-    env:
-      F90: gfortran-8
-
+    #env:
+    #  F90: gfortran-8
+    strategy:
+      matrix:
+        fortran-compiler: [gfortran-8, gfortran-9]
     # Sequence of tasks that will be executed as part of the job
     steps:
     # Checks-out repository under $GITHUB_WORKSPACE
@@ -24,18 +26,20 @@ jobs:
         pip install -r python_requirements.txt
     - name: Install gfortran and netCDF libraries
       run: |
-        sudo apt-get install ${F90}
+        sudo apt-get install ${{ matrix.fortran-compiler }}
         sudo apt-get install libnetcdf-dev
-        ${F90} --version
+        ${{ matrix.fortran-compiler }} --version
     - name: Build and install netCDF Fortran library
       run: |
         git clone https://github.com/Unidata/netcdf-fortran.git --branch v4.4.4
         cd netcdf-fortran
+        FC=${{ matrix.fortran-compiler }}
         ./configure --prefix=/usr
         make
         sudo make install
     - name: Build driver
       run: |
+        F90=${{ matrix.fortran-compiler }}
         cd build
         make driver
     - name: Run test

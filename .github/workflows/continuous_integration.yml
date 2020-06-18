@@ -1,0 +1,30 @@
+# Workflow for continuous integration tests
+name: CI
+on: [push, pull_request]
+
+jobs:
+  # This workflow contains a single job called "test"
+  test:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        fortran-compiler: [gfortran, gfortran-8]
+    env:
+      F90: ${{ matrix.fortran-compiler }}
+      F90FLAGS: "-O3 -ffree-line-length-none -fcheck=bounds -finit-real=nan"
+      ATOL: 0.0
+      RTOL: 0.0
+    # Sequence of tasks that will be executed as part of the job
+    steps:
+    # Checks-out repository under $GITHUB_WORKSPACE
+    - uses: actions/checkout@v2
+    # Set up Python and install dependencies
+    - name: Set up Python
+      uses: actions/setup-python@v1
+      with:
+        python-version: '3.x'
+    - name: Install python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install netCDF4 argparse numpy matplotlib

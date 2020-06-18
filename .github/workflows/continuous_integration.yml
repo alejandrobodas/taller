@@ -26,7 +26,6 @@ jobs:
         python-version: '3.x'
     - name: Install python dependencies
       run: |
-        sudo apt-get install libgeos++-dev
-        sudo apt-get install libproj-dev
+        conda install -c conda-forge cartopy
         python -m pip install --upgrade pip
-        pip install netCDF4 argparse numpy matplotlib geoplot cartopy
+        pip install netCDF4 argparse numpy matplotlib

@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-18.04
     strategy:
       matrix:
-        fortran-compiler: [gfortran, gfortran-8]
+        fortran-compiler: [gfortran]
     env:
       F90: ${{ matrix.fortran-compiler }}
       F90FLAGS: "-O3 -ffree-line-length-none -fcheck=bounds -finit-real=nan"
@@ -27,4 +27,4 @@ jobs:
     - name: Install python dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install netCDF4 argparse numpy matplotlib
+        pip install netCDF4 argparse numpy matplotlib cartopy

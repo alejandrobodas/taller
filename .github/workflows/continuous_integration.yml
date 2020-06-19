@@ -30,8 +30,7 @@ jobs:
     # Run python test
     - name: Python test
       run: |
-        conda init bash
-        source /home/runner/.bashrc
+        source '/usr/share/miniconda/etc/profile.d/conda.sh' 
         conda activate
         cd driver
         python test.py

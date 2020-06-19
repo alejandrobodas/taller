@@ -29,3 +29,8 @@ jobs:
         conda install -c conda-forge cartopy
         python -m pip install --upgrade pip
         pip install netCDF4 argparse numpy matplotlib
+    # Run python test
+    - name: Python test
+      run: |
+        cd driver
+        python test.py

@@ -26,11 +26,11 @@ jobs:
         python-version: '3.x'
     - name: Install python dependencies
       run: |
-        conda install -c conda-forge cartopy
         python -m pip install --upgrade pip
         pip install netCDF4 argparse
     # Run python test
     - name: Python test
       run: |
+        conda install -c conda-forge cartopy
         cd driver
         python test.py

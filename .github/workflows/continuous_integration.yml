@@ -30,6 +30,7 @@ jobs:
     # Run python test
     - name: Python test
       run: |
+        conda init bash
         conda activate
         cd driver
         python test.py

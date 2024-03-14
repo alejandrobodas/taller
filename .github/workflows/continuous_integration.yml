@@ -9,24 +9,72 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        fortran-compiler: [gfortran]
+        fortran-compiler: [gfortran, ifort]
     env:
       F90: ${{ matrix.fortran-compiler }}
+      FC: ${{ matrix.fortran-compiler }}
       F90FLAGS: "-O3 -ffree-line-length-none -fcheck=bounds -finit-real=nan"
       ATOL: 0.0
       RTOL: 0.0
+      KGO_VERSION: v002
+      NFHOME: /home/runner/netcdf-fortran
+      LD_LIBRARY_PATH: /home/runner/netcdf-fortran/lib
     # Sequence of tasks that will be executed as part of the job
     steps:
     # Checks-out repository under $GITHUB_WORKSPACE
     - uses: actions/checkout@v2
     # Set up Python and install dependencies
     - name: Set up Python
-      uses: actions/setup-python@v1
+      uses: actions/setup-python@v2
       with:
-        python-version: '3.x'
-    - name: Install python dependencies
+        python-version: 3.7
+    - name: Setup conda
+      uses: s-weigand/setup-conda@v1
+      with:
+        python-version: 3.7
+    - name: Install python packages
+      run: conda install --yes cartopy matplotlib netcdf4
+    # Update system packages
+    - name: Update system packages
+      run: sudo apt-get update
+    # Non compiler-specific environment
+    - name: Non compiler-specific environment
+      run: export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${NFHOME}/lib
+    ###############################################################################
+    # FORTRAN compilers
+    ###############################################################################
+    #
+    # Install gfortran compiler
+    #
+    - name: Install gfortran compiler
+      if: contains(matrix.fortran-compiler, 'gfortran')
+      run: sudo apt-get install ${{ matrix.fortran-compiler }}
+    #
+    # Intel compilers
+    #
+    - name: cache-intel-compilers
+      id: cache-intel-compilers
+      if: contains(matrix.fortran-compiler, 'ifort')
+      uses: actions/cache@v2
+      with:
+        path: /opt/intel
+        key: intel-${{ runner.os }}-compilers-b
+
+    # https://software.intel.com/content/www/us/en/develop/articles/installing-intel-oneapi-toolkits-via-apt.html
+    # List of packages from Docler file at
+    #    https://github.com/intel/oneapi-containers/blob/master/images/docker/hpckit-devel-ubuntu18.04/Dockerfile
+    - name: Install Intel compilers and libraries
+      if: contains(matrix.fortran-compiler, 'ifort') && steps.cache-intel-compilers.outputs.cache-hit != 'true'
       run: |
-        conda install cartopy matplotlib netcdf4
+        wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
+        sudo apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS-2023.PUB
+        sudo add-apt-repository "deb https://apt.repos.intel.com/oneapi all main"
+        sudo apt-get update
+        sudo apt-get install intel-hpckit-getting-started intel-oneapi-clck intel-oneapi-common-licensing intel-oneapi-common-vars
+        sudo apt-get install intel-oneapi-dev-utilities  intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic intel-oneapi-compiler-fortran intel-oneapi-itac
+    ###############################################################################
+    # Tests
+    ###############################################################################
     # Run python test
     - name: Python test
       run: |

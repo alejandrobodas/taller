@@ -41,4 +41,4 @@ jobs:
         OUTPATH=driver/data/cosp_input.um_global.nc.gz
         wget --no-check-certificate $GDFILE -O $OUTPATH
         gunzip ${OUTPATH}
-        ls -lh ${OUTPATH}
+        ls -lh driver/data

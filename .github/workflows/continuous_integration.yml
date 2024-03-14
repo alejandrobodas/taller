@@ -40,5 +40,5 @@ jobs:
         GDFILE='https://docs.google.com/uc?export=download&id=17eK4_DVEvFOE9Uf6siXJDpWZJKT1aqkU'
         OUTPATH=driver/data/cosp_input.um_global.nc.gz
         curl -LsSfO -o $OUTPATH $GDFILE
-        gunzip ${OUTPATH}
         ls -lh driver/data
+        gunzip ${OUTPATH}

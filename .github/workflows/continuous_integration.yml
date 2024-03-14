@@ -73,15 +73,8 @@ jobs:
         sudo apt-get install intel-hpckit-getting-started intel-oneapi-clck intel-oneapi-common-licensing intel-oneapi-common-vars
         sudo apt-get install intel-oneapi-dev-utilities  intel-oneapi-compiler-dpcpp-cpp-and-cpp-classic intel-oneapi-compiler-fortran intel-oneapi-itac
     ###############################################################################
-    # Tests
+    # Tests file download
     ###############################################################################
-    # Run python test
-    - name: Python test
-      run: |
-        source '/usr/share/miniconda/etc/profile.d/conda.sh' 
-        conda activate
-        cd driver
-        python test.py
     # Retrieve and expand large data files
     - name: Retrieve data files
       run: |

@@ -34,3 +34,11 @@ jobs:
         conda activate
         cd driver
         python test.py
+    # Retrieve and expand large data files
+    - name: Retrieve data files
+      run: |
+        GDFILE='https://docs.google.com/uc?export=download&id=17eK4_DVEvFOE9Uf6siXJDpWZJKT1aqkU'
+        OUTPATH=driver/data/cosp_input.um_global.nc.gz
+        wget --no-check-certificate $GDFILE -O $OUTPATH
+        gunzip ${OUTPATH}
+        ls -lh ${OUTPATH}

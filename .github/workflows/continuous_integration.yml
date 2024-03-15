@@ -14,7 +14,7 @@ jobs:
     # Sequence of tasks that will be executed as part of the job
     defaults:
       run:
-        shell: bash -l {0}
+        shell: bash -el {0}
     steps:
     ###############################################################################
     # Initial steps
@@ -26,21 +26,21 @@ jobs:
         pwd
         ls
     # Set up Python and install dependencies
+    # auto-update-conda: true
+    # miniforge-variant: Mambaforge
+    # channels: conda-forge
+    # python-version: ${{ matrix.python-version }}
+    # activate-environment: cienv
+    # environment-file: etc/environment.yml
+    # use-mamba: true
     - name: Setup conda environment
       uses: conda-incubator/setup-miniconda@v3.0.3
-    # activate-environment: ci_env
-    # environment-file: etc/environment.yml
-    # python-version: ${{ matrix.python-version }}
-    # auto-activate-base: false
-    # auto-update-conda: true
       with:
         auto-update-conda: true
-        miniforge-variant: Mambaforge
-        channels: conda-forge
-        python-version: ${{ matrix.python-version }}
         activate-environment: cienv
         environment-file: etc/environment.yml
-        use-mamba: true
+        python-version: ${{ matrix.python-version }}
+        auto-activate-base: false
     - name: Environment info
       run: |
         conda info

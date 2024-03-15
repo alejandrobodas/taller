@@ -36,12 +36,9 @@ jobs:
         activate-environment: ci_env
         use-mamba: true
     - name: Install python packages
-      run: conda install --yes cartopy matplotlib netcdf4
-    # NetCDF C and FORTRAN libraries
-    - name: Install NetCDF library
       run: |
-        sudo apt-get update
-        sudo apt-get install libnetcdff-dev
+        conda install --name ci_env --yes cartopy matplotlib netcdf4
+        conda list
     - name: Test python environment
       run: |
         cd driver

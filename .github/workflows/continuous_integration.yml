@@ -1,78 +1,44 @@
 # Workflow for continuous integration tests
-name: CI
+name: Continuous integration gfortran compilers
 on: [push, pull_request, workflow_dispatch]
 
 jobs:
-  # This workflow contains a single job called "test"
-  test:
+  # This workflow contains a single job called "ci_gfortran"
+  ci_gfortran:
     # The type of runner that the job will run on
     runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
-        compiler: [ifort, ifx]
-        include:
-        # Set flags for Intel Fortran Compiler Classic
-        - compiler: ifort
-          fcflags: -m64 -g -traceback -heap-arrays -assume realloc_lhs -extend-source 132 -check bounds,uninit,pointers,stack -stand f08
-          gdkgo: https://docs.google.com/uc?export=download&id=1s5Ha6Hqnv_hWbRUs8KQpJ4Lxy8uvJDar
-        # Set flags for Intel Fortran Compiler
-        - compiler: ifx
-          fcflags: -debug -traceback -O0 -heap-arrays -assume realloc_lhs -extend-source 132 -stand f08
-          gdkgo: https://docs.google.com/uc?export=download&id=1TpXY-vXkwAnym9nNjzUxt1q_8c8T7X8T
-        # # Set flags for NVIDIA Fortran compiler
-        # - compiler: nvfortran
-        #   fcflags: -Mallocatable=03 -Mstandard -Mbounds -Mchkptr -Kieee -Mchkstk
-        # Set container images
-        - compiler: ifort
-          image: ghcr.io/earth-system-radiation/rte-rrtmgp-ci:oneapi
-        - compiler: ifx
-          image: ghcr.io/earth-system-radiation/rte-rrtmgp-ci:oneapi
-        # - compiler: nvfortran
-        #   image: ghcr.io/earth-system-radiation/rte-rrtmgp-ci:nvhpc
-    container:
-      image: ${{ matrix.image }}
-    env:
-      F90: ${{ matrix.compiler }}
-      FC:  ${{ matrix.compiler }}
-      F90FLAGS:  ${{ matrix.fcflags }}
-      # Make variables:
-      NFHOME: /opt/netcdf-fortran
-      # KGO tests variables
-      ATOL: 0.0
-      RTOL: 0.0
-      KGO_VERSION: v002
-      GDKGO: ${{ matrix.gdkgo }}
+        python-version: [3.11]
     # Sequence of tasks that will be executed as part of the job
     steps:
+    ###############################################################################
+    # Initial steps
+    ###############################################################################
     # Checks-out repository under $GITHUB_WORKSPACE
     - uses: actions/checkout@v4
-    ###############################################################################
-    # Tests file download
-    ###############################################################################
-    # Retrieve and expand large data files
-    - name: Retrieve data files
+    # Set up Python and install dependencies
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Setup conda
+      # uses: s-weigand/setup-conda@v1.2.1
+      # with:
+      #   python-version: 3.11
+      uses: conda-incubator/setup-miniconda@v3.0.3
+      with:
+        auto-update-conda: true
+        python-version: ${{ matrix.python-version }}
+        miniforge-variant: Mambaforge
+        channels: conda-forge
+        activate-environment: ci_env
+        use-mamba: true
+    - name: Install python packages
+      run: conda install --yes cartopy matplotlib netcdf4
+    # NetCDF C and FORTRAN libraries
+    - name: Install NetCDF library
       run: |
-        echo $GDKGO
-        OUTPATH=driver/data/cosp_input.um_global.nc.gz
-        curl -sSfL -o $OUTPATH $GDKGO
-        gunzip ${OUTPATH}
-        ls -lh driver/data
-        # if [[ "${F90}" = 'ifort' ]]; then
-        #   GDFILE1='https://docs.google.com/uc?export=download&id=1s5Ha6Hqnv_hWbRUs8KQpJ4Lxy8uvJDar'
-        # fi
-        # if [[ "${F90}" = 'ifx' ]]; then
-        #   GDFILE1='https://docs.google.com/uc?export=download&id=1TpXY-vXkwAnym9nNjzUxt1q_8c8T7X8T'
-        # fi
-        # cd ${GITHUB_WORKSPACE}
-        # OUTPATH=driver/data/outputs/UKMO/cosp2_output.um_global.${F90}.kgo.$KGO_VERSION.nc.gz
-        # curl -sSfL -o $OUTPATH $GDFILE1
-        # gunzip ${OUTPATH}
-        # cd driver/data/outputs/UKMO
-        # ls -lh
-    ###############################################################################
-    # Tests compilers
-    ###############################################################################
-    - name: Basic test, UM global snapshot
-      run: |
-        ${F90} --version
+        sudo apt-get update
+        sudo apt-get install libnetcdff-dev

@@ -49,18 +49,23 @@ jobs:
     # Retrieve and expand large data files
     - name: Retrieve data files
       run: |
-        if [[ "${F90}" = 'ifort' ]]; then
-          GDFILE1='https://docs.google.com/uc?export=download&id=1s5Ha6Hqnv_hWbRUs8KQpJ4Lxy8uvJDar'
-        fi
-        if [[ "${F90}" = 'ifx' ]]; then
-          GDFILE1='https://docs.google.com/uc?export=download&id=1TpXY-vXkwAnym9nNjzUxt1q_8c8T7X8T'
-        fi
-        cd ${GITHUB_WORKSPACE}
-        OUTPATH=driver/data/outputs/UKMO/cosp2_output.um_global.${F90}.kgo.$KGO_VERSION.nc.gz
-        curl -sSfL -o $OUTPATH $GDFILE1
+        GDFILE='https://docs.google.com/uc?export=download&id=17eK4_DVEvFOE9Uf6siXJDpWZJKT1aqkU'
+        OUTPATH=driver/data/cosp_input.um_global.nc.gz
+        curl -sSfL -o $OUTPATH $GDFILE
         gunzip ${OUTPATH}
-        cd driver/data/outputs/UKMO
-        ls -lh
+        ls -lh driver/data
+        # if [[ "${F90}" = 'ifort' ]]; then
+        #   GDFILE1='https://docs.google.com/uc?export=download&id=1s5Ha6Hqnv_hWbRUs8KQpJ4Lxy8uvJDar'
+        # fi
+        # if [[ "${F90}" = 'ifx' ]]; then
+        #   GDFILE1='https://docs.google.com/uc?export=download&id=1TpXY-vXkwAnym9nNjzUxt1q_8c8T7X8T'
+        # fi
+        # cd ${GITHUB_WORKSPACE}
+        # OUTPATH=driver/data/outputs/UKMO/cosp2_output.um_global.${F90}.kgo.$KGO_VERSION.nc.gz
+        # curl -sSfL -o $OUTPATH $GDFILE1
+        # gunzip ${OUTPATH}
+        # cd driver/data/outputs/UKMO
+        # ls -lh
     ###############################################################################
     # Tests compilers
     ###############################################################################

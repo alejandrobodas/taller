@@ -23,25 +23,19 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Setup conda
+    - name: Setup conda environment
       # uses: s-weigand/setup-conda@v1.2.1
       # with:
       #   python-version: 3.11
       uses: conda-incubator/setup-miniconda@v3.0.3
       with:
-        auto-update-conda: true
-        python-version: ${{ matrix.python-version }}
-        miniforge-variant: Mambaforge
-        channels: conda-forge
         activate-environment: ci_env
-        use-mamba: true
-    - name: Install python packages
+        environment-file: example-environment.yml
+        python-version: ${{ matrix.python-version }}
+        auto-activate-base: false
+    - name: Environment info
       run: |
-        conda install --name ci_env --yes cartopy matplotlib netcdf4
-    - name: Activate environment
-      run: |
-        conda init
-        conda activate ci_env
+        conda info
         conda list
     - name: Test python environment
       run: |

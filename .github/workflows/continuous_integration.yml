@@ -40,6 +40,7 @@ jobs:
     - name: Environment info
       run: |
         echo $CONDA_DEFAULT_ENV
+        conda info
     - name: Test python environment
       run: |
         cd driver

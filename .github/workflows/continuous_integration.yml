@@ -12,6 +12,9 @@ jobs:
       matrix:
         python-version: [3.11]
     # Sequence of tasks that will be executed as part of the job
+    defaults:
+      run:
+        shell: bash -l {0}
     steps:
     ###############################################################################
     # Initial steps

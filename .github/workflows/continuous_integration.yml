@@ -39,9 +39,7 @@ jobs:
         auto-activate-base: false
     - name: Environment info
       run: |
-        conda activate ci_env
-        conda info
-        conda list
+        echo $CONDA_DEFAULT_ENV
     - name: Test python environment
       run: |
         cd driver

@@ -23,14 +23,11 @@ jobs:
         pwd
         ls
     # Set up Python and install dependencies
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: ${{ matrix.python-version }}
+    # - name: Set up Python
+    #   uses: actions/setup-python@v5
+    #   with:
+    #     python-version: ${{ matrix.python-version }}
     - name: Setup conda environment
-      # uses: s-weigand/setup-conda@v1.2.1
-      # with:
-      #   python-version: 3.11
       uses: conda-incubator/setup-miniconda@v3.0.3
       with:
         activate-environment: ci_env
@@ -40,7 +37,6 @@ jobs:
         auto-update-conda: true
     - name: Environment info
       run: |
-        echo $CONDA_DEFAULT_ENV
         conda info
     - name: Test python environment
       run: |

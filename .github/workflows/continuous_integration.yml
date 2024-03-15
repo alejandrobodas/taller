@@ -18,6 +18,10 @@ jobs:
     ###############################################################################
     # Checks-out repository under $GITHUB_WORKSPACE
     - uses: actions/checkout@v4
+    - name: List dirs
+      run: |
+        pwd
+        ls
     # Set up Python and install dependencies
     - name: Set up Python
       uses: actions/setup-python@v5
@@ -30,7 +34,7 @@ jobs:
       uses: conda-incubator/setup-miniconda@v3.0.3
       with:
         activate-environment: ci_env
-        environment-file: etc/example-environment.yml
+        environment-file: etc/environment.yml
         python-version: ${{ matrix.python-version }}
         auto-activate-base: false
     - name: Environment info

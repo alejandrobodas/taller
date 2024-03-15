@@ -38,6 +38,9 @@ jobs:
     - name: Install python packages
       run: |
         conda install --name ci_env --yes cartopy matplotlib netcdf4
+    - name: Activate environment
+      run: |
+        conda activate ci_env
         conda list
     - name: Test python environment
       run: |

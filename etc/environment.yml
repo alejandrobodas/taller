@@ -1,4 +1,4 @@
-name: ci_env
+name: cienv
 channels:
   - conda-forge
   - defaults

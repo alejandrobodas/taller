@@ -46,11 +46,29 @@ jobs:
     - name: Retrieve input files
       run: |
         cd ${GITHUB_WORKSPACE}
-        OUTPATH=driver/data/outputs/kgo.nc.gz
+        OUTPATH=driver/data/outputs/kgo1.nc.gz
         curl -sSfL -o $OUTPATH $GDKGO1
         gunzip ${OUTPATH}
         cd driver/data/outputs
-        ls -l
+        ls -lh
+    - name: Acquire Google access token
+      id: google-access-token
+      uses: playeveryware/action-google-access-token@v1
+      with:
+        credentials: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS }}
+        scope: 'https://www.googleapis.com/auth/drive.readonly'
+    - name: Download file
+      uses: playeveryware/action-google-drive-download@v1
+      with:
+        token: ${{ steps.google-access-token.outputs.token }}
+        file-id: 11dKcIL3EQr7s6jbo4f9GsoW0SufesGbq
+        path: driver/data/outputs/kgo2.nc.gz
+    - name: Unzip and list downloaded files
+      run: |
+        cd ${GITHUB_WORKSPACE}
+        gunzip driver/data/outputs/kgo1.nc.gz
+        gunzip driver/data/outputs/kgo2.nc.gz
+        ls -lh driver/data/outputs
     - name: Test python environment
       run: |
         cd driver

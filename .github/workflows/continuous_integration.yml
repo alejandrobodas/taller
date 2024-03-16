@@ -69,7 +69,7 @@ jobs:
       run: |
         cd ${GITHUB_WORKSPACE}
         gunzip driver/data/outputs/kgo1.nc.gz
-        gunzip cosp2_output.um_global.ifx.kgo.v002.nc.gz
+        # gunzip cosp2_output.um_global.ifx.kgo.v002.nc.gz
         ls -lh driver/data/outputs
     - name: Test python environment
       run: |

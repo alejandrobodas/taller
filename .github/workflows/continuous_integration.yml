@@ -51,20 +51,20 @@ jobs:
         gunzip ${OUTPATH}
         cd driver/data/outputs
         ls -lh
-    # - id: google-token
-    #   uses: playeveryware/action-google-access-token@v1
-    #   with:
-    #     credentials: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS }}
-    #     scope: 'https://www.googleapis.com/auth/drive.readonly'
-    # - name: Show (masked) token
-    #   run: |
-    #     echo "Masked token ${{ steps.google-token.outputs.token }}"
-    # - name: Download file
-    #   uses: playeveryware/action-google-drive-download@v1
-    #   with:
-    #     token: ${{ steps.google-access-token.outputs.token }}
-    #     file-id: 11dKcIL3EQr7s6jbo4f9GsoW0SufesGbq
-    #     path: driver/data/outputs/kgo2.nc.gz
+    - id: google-token
+      uses: playeveryware/action-google-access-token@v1
+      with:
+        credentials: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS }}
+        scope: 'https://www.googleapis.com/auth/drive.readonly'
+    - name: Show (masked) token
+      run: |
+        echo "Masked token ${{ steps.google-token.outputs.token }}"
+    - name: Download file
+      uses: playeveryware/action-google-drive-download@v1
+      with:
+        token: ${{ steps.google-access-token.outputs.token }}
+        file-id: 11dKcIL3EQr7s6jbo4f9GsoW0SufesGbq
+        path: driver/data/outputs/kgo2.nc.gz
     - name: Unzip and list downloaded files
       run: |
         cd ${GITHUB_WORKSPACE}

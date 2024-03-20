@@ -10,68 +10,73 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        compiler: [gfortran-10, gfortran-11]
         python-version: [3.11]
-    # Sequence of tasks that will be executed as part of the job
     defaults:
       run:
         shell: bash -el {0}
     env:
+      F90: ${{ matrix.compiler }}
+      FC:  ${{ matrix.compiler }}
+      F90FLAGS: "-O3 -ffree-line-length-none -fcheck=bounds -finit-real=nan"
+      NFHOME: /usr
+      ATOL: 0.0
+      RTOL: 0.0
+      KGO_VERSION: v002
       GDKGO1: https://docs.google.com/uc?export=download&id=11dKcIL3EQr7s6jbo4f9GsoW0SufesGbq
       GDKGO2: https://docs.google.com/uc?export=download&id=1s5Ha6Hqnv_hWbRUs8KQpJ4Lxy8uvJDar
       GDKGO3: https://docs.google.com/uc?export=download&id=1kY1lRgzd0UhDiQef2u-VgTQql_iut3U2
+      F90_SHORT_NAME: gfortran
+    # Sequence of tasks that will be executed as part of the job
     steps:
     ###############################################################################
     # Initial steps
     ###############################################################################
     # Checks-out repository under $GITHUB_WORKSPACE
     - uses: actions/checkout@v4
-    - name: List dirs
-      run: |
-        pwd
-        ls
+    # Set up conda environment
     - name: Setup conda environment
       uses: conda-incubator/setup-miniconda@v3.0.3
       with:
         auto-update-conda: true
-        activate-environment: cienv
-        environment-file: etc/environment.yml
+        activate-environment: ci-env
+        environment-file: build/environment.yml
         python-version: ${{ matrix.python-version }}
         auto-activate-base: false
-    - name: Environment info
+    # NetCDF C and FORTRAN libraries
+    - name: Install NetCDF library
       run: |
-        conda info
+        sudo apt-get update
+        sudo apt-get install libnetcdff-dev
+
     ###############################################################################
-    # Retrieve files and run tests
+    # Build COSP and retrieve input and test files
     ###############################################################################
-    - name: Retrieve input files
+    # Build COSP2 driver. 
+    - name: Build driver
+      run: |
+        ${F90} --version
+    # Retrieve and expand large data files
+    - name: Retrieve KGOs for basic test
       run: |
         cd ${GITHUB_WORKSPACE}
-        OUTPATH=driver/data/outputs/kgo1.nc.gz
+        OUTPATH=driver/data/outputs/cosp2_output_um.${F90_SHORT_NAME}.kgo.$KGO_VERSION.nc.gz
         curl -sSfL -o $OUTPATH $GDKGO1
         gunzip ${OUTPATH}
         cd driver/data/outputs
-        ls -lh
-    - id: google-token
-      uses: playeveryware/action-google-access-token@v1
-      with:
-        credentials: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS }}
-        scope: 'https://www.googleapis.com/auth/drive.readonly'
-    - name: Show (masked) token
-      run: |
-        echo "Masked token ${{ steps.google-token.outputs.token }}"
-    - name: Download file
-      uses: playeveryware/action-google-drive-download@v1
-      with:
-        token: ${{ steps.google-access-token.outputs.token }}
-        file-id: 11dKcIL3EQr7s6jbo4f9GsoW0SufesGbq
-        path: driver/data/outputs/kgo2.nc.gz
-    - name: Unzip and list downloaded files
-      run: |
-        cd ${GITHUB_WORKSPACE}
-        gunzip driver/data/outputs/kgo1.nc.gz
-        # gunzip cosp2_output.um_global.ifx.kgo.v002.nc.gz
-        ls -lh driver/data/outputs
-    - name: Test python environment
+    ###############################################################################
+    # Run failing test
+    ###############################################################################
+    - name: Basic test, UM global snapshot
       run: |
         cd driver
-        python test.py
+        python test_fail.py
+    ###############################################################################
+    # Upload artifact
+    ###############################################################################
+    - name: Upload output file if test fails
+      if: failure()
+      uses: actions/upload-artifact@v4.3.1
+      with:
+        name: cosp2_output_um.${{ matrix.compiler }}.kgo.$KGO_VERSION.nc
+        path: driver/data/outputs/cosp2_output_um.${{ matrix.compiler }}.kgo.$KGO_VERSION.nc

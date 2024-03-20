@@ -79,4 +79,4 @@ jobs:
       uses: actions/upload-artifact@v4.3.1
       with:
         name: cosp2_output_um.${{ matrix.compiler }}.kgo.$KGO_VERSION.nc
-        path: driver/data/outputs/cosp2_output_um.${{ matrix.compiler }}.kgo.$KGO_VERSION.nc
+        path: driver/data/outputs/cosp2_output_um.${F90_SHORT_NAME}.kgo.$KGO_VERSION.nc

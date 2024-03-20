@@ -12,6 +12,8 @@ jobs:
       matrix:
         compiler: [gfortran-10, gfortran-11]
         python-version: [3.11]
+        compiler_short_name: [gfortran]
+        kgo_version: [v002]
     defaults:
       run:
         shell: bash -el {0}
@@ -79,5 +81,5 @@ jobs:
       if: failure()
       uses: actions/upload-artifact@v4.3.1
       with:
-        name: cosp2_output_um.${{ matrix.compiler }}.kgo.$KGO_VERSION.nc
-        path: driver/data/outputs/cosp2_output_um.${F90_SHORT_NAME}.kgo.$KGO_VERSION.nc
+        name: cosp2_output_um.${{ matrix.compiler }}.kgo.${{ matrix.kgo_version }}.nc
+        path: driver/data/outputs/cosp2_output_um.${{ matrix.compiler_short_name }}.kgo.${{ matrix.kgo_version }}.nc
